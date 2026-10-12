@@ -94,20 +94,52 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .del{background:var(--bg);border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;cursor:pointer}
 .del.armed{border-color:var(--rojo);color:var(--rojo);background:var(--rojo-soft);font-weight:600}
 .empty{color:var(--muted);font-size:14px;padding:6px 0}
+/* Análisis */
+.stack-bar{display:flex;gap:2px;height:44px;border-radius:8px;overflow:hidden;background:var(--bg)}
+.stack-bar .seg{height:100%;min-width:3px;cursor:pointer;transition:opacity .15s}
+.stack-bar:hover .seg{opacity:.55}.stack-bar .seg:hover,.stack-bar .seg.act{opacity:1}
+.seg.libre-seg{background:repeating-linear-gradient(135deg,#D7F2E9 0 6px,#ECFDF8 6px 12px);border:1.5px solid #9FD9C6}
+.seg.def-seg{background:repeating-linear-gradient(135deg,#FECACA 0 6px,#FEF2F2 6px 12px);border:1.5px solid var(--rojo)}
+.escala{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:6px}
+.leyenda{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+.leyenda td{padding:7px 4px;border-bottom:1px solid var(--line)}
+.leyenda tr:last-child td{border-bottom:0}
+.leyenda td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.leyenda td.p{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;width:56px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.leyenda tr.dest td{background:var(--panel)}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--fg);color:#fff;font-size:12.5px;line-height:1.35;padding:7px 9px;border-radius:6px;box-shadow:0 4px 14px rgba(15,23,42,.2);max-width:220px}
+.tip b{display:block}
+.lin{width:100%;display:block;touch-action:pan-y}
+.lin text{font-family:var(--sans);font-size:11px;fill:var(--muted)}
+.ley2{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--text2);margin-top:8px}
+.ley2 i{display:inline-block;width:18px;height:0;border-top:2.5px solid;margin-right:6px;vertical-align:middle}
+.concl{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.concl li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:14.5px;line-height:1.45}
+.concl .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;background:var(--azul)}
+.concl .ic.ok{background:var(--verde)}.concl .ic.mal{background:var(--rojo)}.concl .ic.info{background:var(--muted)}
 /* Items */
-.cathead,.catrow{display:grid;grid-template-columns:minmax(0,1fr) 72px 96px 38px;gap:8px;align-items:center}
-.cathead{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:6px}
-.catrow{margin-bottom:8px}
+.catrow{display:grid;grid-template-columns:auto minmax(0,128px) minmax(0,1fr) 38px;grid-template-areas:"nm nm nm x" "md val eq eq";gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.catrow:last-child{border-bottom:0}
+.catrow .nmi{grid-area:nm;font-weight:600}
+.catrow .x{grid-area:x}
+.catrow .modo{grid-area:md;display:flex;background:var(--chip);border-radius:8px;padding:3px}
+.catrow .modo button{border:0;background:transparent;color:var(--text2);font:inherit;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;cursor:pointer;min-width:38px}
+.catrow .modo button.on{background:var(--bg);color:var(--azul);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+.catrow .val{grid-area:val;position:relative}
+.catrow .val input{text-align:right;padding-right:28px!important}
+.catrow .val .u{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none}
+.catrow .val.monto input{padding-left:24px!important;padding-right:10px!important}
+.catrow .val.monto .u{left:10px;right:auto}
 .catrow input{font-size:15px!important;padding:9px 10px!important}
-.catrow .pct{text-align:right}
-.catrow .amt{text-align:right;font-size:13px;color:var(--text2);font-weight:500}
+.catrow .amt{grid-area:eq;font-size:12.5px;color:var(--muted);text-align:right}
 .x{width:38px;height:38px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--muted);cursor:pointer}
 .suma{display:flex;justify-content:space-between;gap:10px;padding:12px;margin:6px 0 12px;background:var(--panel);border-radius:8px;font-size:14px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .aviso{background:var(--rojo-soft);border:1px solid #FECACA;color:var(--rojo);border-radius:12px;padding:12px 14px;font-size:14px}
 .login{min-height:100vh;display:grid;place-items:center;padding-inline:16px}
 .login form{width:100%;max-width:360px;display:grid;gap:10px}
-@media (max-width:420px){ .kpi b{font-size:15px} .hero .val{font-size:30px} .cathead,.catrow{grid-template-columns:minmax(0,1fr) 62px 84px 38px} }
+@media (max-width:420px){ .kpi b{font-size:15px} .hero .val{font-size:30px} }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
 </head>
@@ -132,6 +164,7 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
     <div class="hsub"><span id="sub"></span><span class="sync" id="sync">Cargando</span></div>
     <nav>
       <button data-v="res" class="on">Resumen</button>
+      <button data-v="ana">Análisis</button>
       <button data-v="reg">Registrar gasto</button>
       <button data-v="ing" style="--c:var(--teal)">Ingresos</button>
       <button data-v="mov">Movimientos</button>
@@ -154,6 +187,27 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
     <div class="card">
       <h2>Tu sueldo, repartido por item</h2>
       <div id="reparto"></div>
+    </div>
+  </section>
+
+  <!-- ANÁLISIS -->
+  <section id="v-ana" hidden>
+    <div class="card">
+      <h2>Conclusiones del mes</h2>
+      <ul class="concl" id="concl"></ul>
+    </div>
+    <div class="card">
+      <h2>¿En qué se va tu sueldo?</h2>
+      <p class="muted" id="ana-base" style="margin:-4px 0 12px"></p>
+      <div class="stack-bar" id="stack" role="img"></div>
+      <div class="escala"><span>$0</span><span id="esc-fin"></span></div>
+      <table class="leyenda" id="leyenda"></table>
+    </div>
+    <div class="card">
+      <h2>Ritmo de gasto del mes</h2>
+      <p class="muted" style="margin:-4px 0 8px">Gasto acumulado día a día, comparado con lo que planificaste gastar en los items. El plan parte con vivienda y cuentas, que se pagan una vez al mes.</p>
+      <svg class="lin" id="lin" role="img" aria-label="Gasto acumulado del mes comparado con el plan"></svg>
+      <div class="ley2" id="ley2"></div>
     </div>
   </section>
 
@@ -214,9 +268,8 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
   <!-- ITEMS -->
   <section id="v-aj" hidden>
     <div class="card">
-      <h2>Porcentaje del sueldo por item</h2>
-      <p class="muted" style="margin-top:-4px">Los montos se calculan con tu sueldo de <span id="aj-mes"></span>. Los porcentajes que vienen son una sugerencia.</p>
-      <div class="cathead"><span>Item</span><span style="text-align:right">%</span><span style="text-align:right">Monto</span><span></span></div>
+      <h2>Cuánto le toca a cada item</h2>
+      <p class="muted" style="margin-top:-4px">Para cada item elige si le asignas un <b>porcentaje</b> de tu sueldo o un <b>monto fijo</b> en pesos. Los cálculos usan tu sueldo de <span id="aj-mes"></span>. Los porcentajes que vienen son una sugerencia.</p>
       <div id="cats"></div>
       <div class="suma" id="suma"></div>
       <div class="row">
@@ -267,6 +320,9 @@ function sueldoDe(m){
   const prev=Object.keys(D.sueldos).filter(k=>k<m).sort().pop();
   return prev?{monto:D.sueldos[prev],desde:prev}:{monto:0,desde:null};
 }
+// Un item se asigna como % del sueldo o como monto fijo en pesos.
+const asignadoDe=(c,base)=>c.modo==='monto'?(c.monto||0):base*(c.porcentaje||0)/100;
+const pctDe=(c,base)=>c.modo==='monto'?(base?(c.monto||0)/base*100:0):(c.porcentaje||0);
 function formatoMonto(el){ el.addEventListener('input',()=>{ const n=digitos(el.value); el.value=n?n.toLocaleString('es-CL'):''; }); }
 
 // ===== Servidor =====
@@ -348,24 +404,24 @@ function renderRes(){
     <div class="kpi"><b class="num">${clp(gastado)}</b><span>gastado</span></div>
     <div class="kpi"><b class="num ${saldo<0?'neg':''}">${clp(saldo)}</b><span>${saldo<0?'déficit':'saldo'}</span></div>`;
   const base=s.monto;
-  let h='', asignadoPct=0;
+  let h='', asignadoMonto=0;
   for(const c of D.categorias){
-    const asignado=base*c.porcentaje/100, gasto=suma(gastosMes(mes,c.id));
-    asignadoPct+=c.porcentaje;
-    if(!c.porcentaje&&!gasto) continue;
+    const asignado=asignadoDe(c,base), gasto=suma(gastosMes(mes,c.id));
+    asignadoMonto+=asignado;
+    if(!asignado&&!gasto) continue;
     const over=asignado?gasto>asignado:gasto>0;
     const w=asignado?Math.min(100,gasto/asignado*100):(gasto?100:0);
     const resto=asignado-gasto;
     const r2=!base?`Gastado ${clp(gasto)}`:over?`<span class="neg">Te pasaste por ${clp(-resto)}</span>`:`Quedan ${clp(resto)}`;
-    h+=`<div class="it"><div class="r1"><span class="nm">${esc(c.nombre)}<span class="pc">${pct(c.porcentaje)}</span></span><span class="as num">${base?clp(asignado):'–'}</span></div>
+    h+=`<div class="it"><div class="r1"><span class="nm">${esc(c.nombre)}<span class="pc">${c.modo==='monto'?'monto fijo':pct(c.porcentaje)}</span></span><span class="as num">${base?clp(asignado):'–'}</span></div>
       <div class="bar"><i class="${over?'over':''}" style="width:${w}%"></i></div>
       <div class="r2"><span class="num">Gastado ${clp(gasto)}</span><span class="num">${base?r2:''}</span></div></div>`;
   }
-  const libre=100-asignadoPct;
+  const libre=base-asignadoMonto, libPct=base?libre/base*100:0;
   if(base) h+=libre>=0
-    ?`<div class="libre"><span>Sin asignar <span class="muted">(ahorro posible)</span> · ${pct(libre)}</span><b class="num">${clp(base*libre/100)}</b></div>`
-    :`<div class="libre"><span class="neg">Los items suman ${pct(asignadoPct)} del sueldo</span><b class="num neg">${clp(base*libre/100)}</b></div>`;
-  $('reparto').innerHTML=h||'<p class="empty">Define los porcentajes en la pestaña Items.</p>';
+    ?`<div class="libre"><span>Sin asignar <span class="muted">(ahorro posible)</span> · ${pct(libPct)}</span><b class="num">${clp(libre)}</b></div>`
+    :`<div class="libre"><span class="neg">Los items suman ${pct(100-libPct)} del sueldo</span><b class="num neg">${clp(libre)}</b></div>`;
+  $('reparto').innerHTML=h||'<p class="empty">Define cuánto le toca a cada item en la pestaña Items.</p>';
 }
 async function guardarSueldo(monto,st){
   st.className='status err';
@@ -452,39 +508,62 @@ function renderMov(){
 $('filtro').onchange=e=>{ filtro=e.target.value; renderMov(); };
 
 // ===== Items =====
+function equivalente(c,base){
+  if(!base) return c.modo==='monto'?'':'Ingresa tu sueldo para ver el monto';
+  return c.modo==='monto'?`= ${pct(pctDe(c,base))} del sueldo`:`= ${clp(asignadoDe(c,base))} al mes`;
+}
+function valorCampo(c){ return c.modo==='monto'?(c.monto?c.monto.toLocaleString('es-CL'):''):(c.porcentaje?String(c.porcentaje).replace('.',','):''); }
 function renderAj(){
-  if(!borrador) borrador=D.categorias.map(c=>({...c}));
+  if(!borrador) borrador=D.categorias.map(c=>({modo:'pct',monto:0,porcentaje:0,...c}));
   const base=sueldoDe(mes).monto;
   $('aj-mes').textContent=base?`${nombreMes(mes).toLowerCase()} (${clp(base)})`:`${nombreMes(mes).toLowerCase()}, que aún no ingresas`;
   $('cats').innerHTML=borrador.map((c,i)=>`<div class="catrow">
-    <input type="text" id="cn-${esc(c.id)}" data-i="${i}" data-k="nombre" value="${esc(c.nombre)}" maxlength="40" aria-label="Nombre del item">
-    <input type="text" id="cp-${esc(c.id)}" data-i="${i}" data-k="porcentaje" class="pct num" value="${c.porcentaje?String(c.porcentaje).replace('.',','):''}" inputmode="decimal" placeholder="0" aria-label="Porcentaje del sueldo para ${esc(c.nombre)}">
-    <span class="amt num" id="ca-${i}">${base?clp(base*(c.porcentaje||0)/100):'–'}</span>
-    <button class="x" type="button" data-i="${i}" aria-label="Eliminar ${esc(c.nombre)}">✕</button></div>`).join('');
+    <input type="text" class="nmi" id="cn-${esc(c.id)}" data-i="${i}" data-k="nombre" value="${esc(c.nombre)}" maxlength="40" aria-label="Nombre del item" placeholder="Nombre del item">
+    <button class="x" type="button" data-i="${i}" aria-label="Eliminar ${esc(c.nombre)}">✕</button>
+    <div class="modo" role="group" aria-label="Tipo de asignación para ${esc(c.nombre)}">
+      <button type="button" data-i="${i}" data-modo="pct" class="${c.modo!=='monto'?'on':''}" aria-pressed="${c.modo!=='monto'}">%</button>
+      <button type="button" data-i="${i}" data-modo="monto" class="${c.modo==='monto'?'on':''}" aria-pressed="${c.modo==='monto'}">$</button>
+    </div>
+    <div class="val ${c.modo==='monto'?'monto':''}"><input type="text" id="cp-${esc(c.id)}" data-i="${i}" data-k="valor" class="num" value="${valorCampo(c)}" inputmode="${c.modo==='monto'?'numeric':'decimal'}" placeholder="0" aria-label="${c.modo==='monto'?'Monto mensual':'Porcentaje del sueldo'} para ${esc(c.nombre)}"><span class="u">${c.modo==='monto'?'$':'%'}</span></div>
+    <span class="amt num" id="ca-${i}">${equivalente(c,base)}</span></div>`).join('');
   renderSuma();
 }
 function renderSuma(){
-  const base=sueldoDe(mes).monto, tot=borrador.reduce((s,c)=>s+(c.porcentaje||0),0), libre=100-tot;
+  const base=sueldoDe(mes).monto;
+  if(!base){
+    const totPct=borrador.filter(c=>c.modo!=='monto').reduce((s,c)=>s+(c.porcentaje||0),0), totM=borrador.filter(c=>c.modo==='monto').reduce((s,c)=>s+(c.monto||0),0);
+    $('suma').innerHTML=`<span>Asignado: <b class="num">${pct(totPct)}</b>${totM?` + <b class="num">${clp(totM)}</b> fijos`:''}</span>`;
+    return;
+  }
+  const tot=borrador.reduce((s,c)=>s+asignadoDe(c,base),0), libre=base-tot;
   $('suma').innerHTML=libre>=0
-    ?`<span>Asignado <b class="num">${pct(tot)}</b></span><span>Sin asignar <b class="num" style="color:var(--teal)">${pct(libre)}${base?' · '+clp(base*libre/100):''}</b></span>`
-    :`<span class="neg">Asignado ${pct(tot)}</span><span class="neg">Te pasas por ${pct(-libre)}</span>`;
+    ?`<span>Asignado <b class="num">${clp(tot)}</b> <span class="muted">(${pct(tot/base*100)})</span></span><span>Sin asignar <b class="num" style="color:var(--teal)">${clp(libre)}</b></span>`
+    :`<span class="neg">Asignado ${clp(tot)} (${pct(tot/base*100)})</span><span class="neg">Te pasas por ${clp(-libre)}</span>`;
 }
 $('cats').addEventListener('input',e=>{
   const t=e.target, i=+t.dataset.i, c=borrador[i]; if(!c) return;
   if(t.dataset.k==='nombre'){ c.nombre=t.value; return; }
-  const limpio=t.value.replace(/[^\d,.]/g,'').replace('.',',');
-  t.value=limpio;
-  c.porcentaje=Math.min(100,Number(limpio.replace(',','.'))||0);
-  const base=sueldoDe(mes).monto; $('ca-'+i).textContent=base?clp(base*c.porcentaje/100):'–';
+  if(c.modo==='monto'){ c.monto=digitos(t.value); t.value=c.monto?c.monto.toLocaleString('es-CL'):''; }
+  else{ const limpio=t.value.replace(/[^\d,.]/g,'').replace('.',','); t.value=limpio; c.porcentaje=Math.min(100,Number(limpio.replace(',','.'))||0); }
+  $('ca-'+i).textContent=equivalente(c,sueldoDe(mes).monto);
   renderSuma();
+});
+$('cats').addEventListener('click',e=>{
+  const b=e.target.closest('.modo button'); if(!b) return;
+  const c=borrador[+b.dataset.i], nuevo=b.dataset.modo; if(!c||c.modo===nuevo) return;
+  const base=sueldoDe(mes).monto;
+  // Al cambiar de tipo se conserva el mismo monto asignado.
+  if(nuevo==='monto') c.monto=Math.round(asignadoDe(c,base));
+  else c.porcentaje=base?Math.min(100,Math.round((c.monto||0)/base*1000)/10):0;
+  c.modo=nuevo; renderAj(); $('cp-'+c.id).focus();
 });
 $('cats').addEventListener('click',e=>{
   const b=e.target.closest('.x'); if(!b) return;
   const c=borrador[+b.dataset.i], st=$('aj-status');
-  if(D.gastos.some(g=>g.cat===c.id)){ st.className='status err'; st.textContent=`"${c.nombre}" tiene gastos anotados. Puedes cambiarle el nombre o dejarlo en 0%, pero no borrarlo.`; return; }
+  if(D.gastos.some(g=>g.cat===c.id)){ st.className='status err'; st.textContent=`"${c.nombre}" tiene gastos anotados. Puedes cambiarle el nombre o dejarlo en 0, pero no borrarlo.`; return; }
   borrador.splice(+b.dataset.i,1); st.textContent=''; renderAj();
 });
-$('addCat').onclick=()=>{ const c={id:nuevoId().slice(0,12),nombre:'',porcentaje:0}; borrador.push(c); renderAj(); $('cn-'+c.id).focus(); };
+$('addCat').onclick=()=>{ const c={id:nuevoId().slice(0,12),nombre:'',modo:'pct',porcentaje:0,monto:0}; borrador.push(c); renderAj(); $('cn-'+c.id).focus(); };
 $('saveCats').onclick=async()=>{
   const st=$('aj-status'); st.className='status err';
   const limpios=borrador.map(c=>({...c,nombre:c.nombre.trim()}));
@@ -506,6 +585,150 @@ $('csv').onclick=()=>{
   a.download='gastos-'+hoy()+'.csv'; document.body.appendChild(a); a.click(); a.remove();
 };
 
+
+// ===== Análisis =====
+// Colores validados (sin naranjo): se asignan por el orden de los items, no por cuánto se gastó.
+const SERIES=['#2a78d6','#1baf7a','#6250d6','#e87ba4','#eda100','#008300'];
+const GRIS_RESTO='#94A3B8';
+const corto=n=>{ const a=Math.abs(n); return (n<0?'−':'')+(a>=1e6?'$'+(a/1e6).toFixed(1).replace('.',',')+' M':a>=1000?'$'+Math.round(a/1000)+' mil':'$'+Math.round(a)); };
+const tip=document.createElement('div'); tip.className='tip'; tip.hidden=true; document.body.appendChild(tip);
+function mostrarTip(html,x,y){ tip.innerHTML=html; tip.hidden=false; const r=tip.getBoundingClientRect(); let l=x+12, t=y-r.height-12; if(l+r.width>innerWidth-8) l=x-r.width-12; if(l<8) l=8; if(t<8) t=y+16; tip.style.left=l+'px'; tip.style.top=t+'px'; }
+function ocultarTip(){ tip.hidden=true; }
+document.addEventListener('scroll',ocultarTip,{passive:true});
+function diasDelMes(m){ const [y,mm]=m.split('-').map(Number); return new Date(y,mm,0).getDate(); }
+
+// Gastos fijos: se pagan una vez al mes, así que no se proyectan día a día.
+const FIJOS=new Set(['vivienda','cuentas']);
+function datosAnalisis(){
+  const s=sueldoDe(mes).monto, otros=suma(ingresosMes(mes)), ingresos=s+otros;
+  const cats=D.categorias.map((c,i)=>({id:c.id,nombre:c.nombre,porcentaje:pctDe(c,s),asignado:asignadoDe(c,s),gasto:suma(gastosMes(mes,c.id)),color:i<SERIES.length?SERIES[i]:null}));
+  const gastado=cats.reduce((a,c)=>a+c.gasto,0);
+  const actual=mes===hoyMes(), dm=diasDelMes(mes), dia=actual?new Date().getDate():dm;
+  const esFijo=g=>FIJOS.has(g.cat)||(ingresos&&g.monto>=ingresos*0.15);
+  const gs=gastosMes(mes), gFijo=suma(gs.filter(esFijo)), gVar=gastado-gFijo;
+  const planFijo=cats.filter(c=>FIJOS.has(c.id)).reduce((a,c)=>a+c.asignado,0);
+  const plan=cats.reduce((a,c)=>a+c.asignado,0), planVar=plan-planFijo;
+  const proy=actual?gFijo+gVar/dia*dm:gastado;
+  return {s,otros,ingresos,cats,gastado,actual,dm,dia,plan,planFijo,planVar,gFijo,gVar,proy,esFijo};
+}
+
+function renderAna(){
+  const A=datosAnalisis();
+  renderStack(A); renderLinea(A); renderConclusiones(A);
+}
+
+function renderStack(A){
+  const conGasto=A.cats.filter(c=>c.gasto>0);
+  const segs=conGasto.filter(c=>c.color).map(c=>({nombre:c.nombre,monto:c.gasto,color:c.color}));
+  const resto=conGasto.filter(c=>!c.color);
+  if(resto.length) segs.push({nombre:resto.length===1?resto[0].nombre:'Otros items',monto:suma(resto.map(c=>({monto:c.gasto}))),color:GRIS_RESTO,detalle:resto.map(c=>c.nombre).join(', ')});
+  const libre=A.ingresos-A.gastado;
+  const total=Math.max(A.ingresos,A.gastado);
+  $('ana-base').textContent=A.ingresos
+    ?`La barra completa son tus ingresos de ${nombreMes(mes,false).toLowerCase()}: ${clp(A.ingresos)}.`
+    :`Ingresa tu sueldo en la pestaña Ingresos para ver cómo se reparte.`;
+  $('esc-fin').textContent=total?clp(total):'';
+  if(!total){ $('stack').innerHTML=''; $('leyenda').innerHTML='<tr><td class="muted">Aún no hay datos este mes.</td></tr>'; return; }
+  const filas=[...segs];
+  if(libre>0) filas.push({nombre:'Disponible',monto:libre,clase:'libre-seg',libre:true});
+  if(libre<0) filas.push({nombre:'Déficit (gastaste más de lo que ganaste)',monto:-libre,clase:'def-seg',deficit:true});
+  const base=A.ingresos||A.gastado;
+  $('stack').setAttribute('aria-label',filas.map(f=>`${f.nombre} ${clp(f.monto)}`).join(', '));
+  $('stack').innerHTML=filas.map((f,i)=>`<div class="seg ${f.clase||''}" data-i="${i}" style="flex:${f.monto} 1 0;${f.color?'background:'+f.color:''}"></div>`).join('');
+  const pctDe=m=>A.ingresos?Math.round(m/A.ingresos*100)+'%':'–';
+  $('leyenda').innerHTML=filas.map((f,i)=>`<tr data-i="${i}" class="${f.libre?'dest':''}">
+    <td><span class="sw ${f.clase||''}" style="${f.color?'background:'+f.color:''}"></span>${esc(f.nombre)}${f.detalle?`<div class="muted" style="margin-left:20px">${esc(f.detalle)}</div>`:''}</td>
+    <td class="n ${f.libre?'pos':f.deficit?'neg':''}">${clp(f.monto)}</td><td class="p">${pctDe(f.monto)}</td></tr>`).join('');
+  const marcar=i=>{ $('stack').querySelectorAll('.seg').forEach(x=>x.classList.toggle('act',x.dataset.i==i)); };
+  $('stack').onpointermove=e=>{ const seg=e.target.closest('.seg'); if(!seg) return; const f=filas[+seg.dataset.i]; marcar(seg.dataset.i);
+    mostrarTip(`<b>${esc(f.nombre)}</b>${clp(f.monto)} · ${pctDe(f.monto)} de tus ingresos`,e.clientX,e.clientY); };
+  $('stack').onpointerleave=()=>{ ocultarTip(); marcar(-1); };
+  $('stack').onpointerdown=$('stack').onpointermove;
+}
+
+function renderLinea(A){
+  const svg=$('lin'), W=Math.max(280,svg.clientWidth||svg.parentNode.clientWidth-32), H=210;
+  const m={t:14,r:62,b:26,l:60}, w=W-m.l-m.r, h=H-m.t-m.b;
+  const porDia=new Array(A.dm+1).fill(0);
+  gastosMes(mes).forEach(g=>{ porDia[+g.fecha.slice(8,10)]+=g.monto; });
+  const acum=[]; let s=0; for(let d=1;d<=A.dm;d++){ s+=porDia[d]; acum[d]=s; }
+  const hasta=A.dia, plan=A.plan;
+  const maxY=Math.max(1,plan,A.ingresos,acum[A.dm]||0)*1.08;
+  const X=d=>m.l+(d-1)/(A.dm-1)*w, Y=v=>m.t+h-v/maxY*h;
+  const ticksY=[0,maxY/2/1.08,maxY/1.08].map(v=>Math.round(v/10000)*10000);
+  let g='';
+  ticksY.forEach(v=>{ g+=`<line x1="${m.l}" x2="${m.l+w}" y1="${Y(v)}" y2="${Y(v)}" stroke="#E2E8F0" stroke-width="1"/><text x="${m.l-6}" y="${Y(v)+4}" text-anchor="end">${corto(v)}</text>`; });
+  [1,10,20,A.dm].forEach(d=>{ g+=`<text x="${X(d)}" y="${H-6}" text-anchor="middle">${d}</text>`; });
+  if(A.ingresos){ g+=`<line x1="${m.l}" x2="${m.l+w}" y1="${Y(A.ingresos)}" y2="${Y(A.ingresos)}" stroke="#0F766E" stroke-width="1.5" stroke-dasharray="2 4"/>`;
+    g+=`<text x="${m.l+w+6}" y="${Y(A.ingresos)+4}" style="fill:#0F766E">Ingresos</text>`; }
+  const planDia=d=>A.planFijo+A.planVar*d/A.dm;
+  if(plan){ g+=`<line x1="${X(1)}" y1="${Y(planDia(1))}" x2="${X(A.dm)}" y2="${Y(plan)}" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 5"/>`;
+    g+=`<text x="${m.l+w+6}" y="${Y(plan)+(Math.abs(Y(plan)-Y(A.ingresos))<14?14:4)}">Plan</text>`; }
+  const pts=[]; for(let d=1;d<=hasta;d++) pts.push(`${X(d).toFixed(1)},${Y(acum[d]).toFixed(1)}`);
+  if(pts.length>1) g+=`<path d="M${pts.join('L')}L${X(hasta).toFixed(1)},${Y(0)}L${X(1)},${Y(0)}Z" fill="#1E40AF" opacity=".07"/><polyline points="${pts.join(' ')}" fill="none" stroke="#1E40AF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(hasta>=1){ const yv=acum[hasta]; g+=`<circle cx="${X(hasta)}" cy="${Y(yv)}" r="5" fill="#1E40AF" stroke="#fff" stroke-width="2"/>`;
+    g+=`<text x="${Math.min(X(hasta)+8,m.l+w-4)}" y="${Y(yv)-9}" text-anchor="${X(hasta)+70>m.l+w?'end':'start'}" style="fill:#0F172A;font-weight:600">${corto(yv)}</text>`; }
+  g+=`<line id="cross" x1="0" x2="0" y1="${m.t}" y2="${m.t+h}" stroke="#64748B" stroke-width="1" visibility="hidden"/>`;
+  g+=`<rect x="${m.l}" y="${m.t}" width="${w}" height="${h}" fill="transparent" id="hit"/>`;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('height',H); svg.innerHTML=g;
+  $('ley2').innerHTML=`<span><i style="border-color:#1E40AF"></i>Gastado acumulado</span>${plan?'<span><i style="border-color:#94A3B8;border-top-style:dashed"></i>Plan de los items</span>':''}${A.ingresos?'<span><i style="border-color:#0F766E;border-top-style:dotted"></i>Ingresos del mes</span>':''}`;
+  const hit=$('hit'), cross=$('cross');
+  const mover=e=>{ const r=svg.getBoundingClientRect(), x=(e.clientX-r.left)*W/r.width; let d=Math.round((x-m.l)/w*(A.dm-1))+1; d=Math.max(1,Math.min(A.dm,d));
+    cross.setAttribute('x1',X(d)); cross.setAttribute('x2',X(d)); cross.setAttribute('visibility','visible');
+    const planD=planDia(d);
+    mostrarTip(`<b>Día ${d}</b>${d<=hasta?`Gastado acumulado: ${clp(acum[d])}<br>`:''}${plan?`Plan a esa fecha: ${clp(planD)}`:''}`,e.clientX,e.clientY); };
+  hit.onpointermove=mover; hit.onpointerdown=mover;
+  hit.onpointerleave=()=>{ cross.setAttribute('visibility','hidden'); ocultarTip(); };
+}
+
+function renderConclusiones(A){
+  const L=[];
+  const add=(tipo,txt)=>L.push(`<li><span class="ic ${tipo}" aria-hidden="true">${tipo==='ok'?'✓':tipo==='mal'?'!':'i'}</span><span>${txt}</span></li>`);
+  if(!A.s){ add('info','Ingresa tu sueldo en la pestaña <b>Ingresos</b> para que pueda comparar tus gastos con lo que ganas.'); }
+  if(!A.gastado){ add('info',`Todavía no hay gastos anotados en ${esc(nombreMes(mes,false).toLowerCase())}.`); $('concl').innerHTML=L.join(''); return; }
+  const pctGastado=A.ingresos?A.gastado/A.ingresos*100:0, pctMes=A.dia/A.dm*100;
+  // 1. Ritmo y proyección (los gastos fijos no se proyectan)
+  if(A.ingresos&&A.actual){
+    add('info',`Llevas gastado <b>${clp(A.gastado)}</b>, el <b>${Math.round(pctGastado)}%</b> de tus ingresos, y va el ${Math.round(pctMes)}% del mes.`);
+    if(A.planVar){
+      const planHoy=A.planVar*A.dia/A.dm, rapido=A.gVar>planHoy*1.05;
+      add(rapido?'mal':'ok',`En el gasto del día a día (sin vivienda, cuentas ni pagos grandes) llevas <b>${clp(A.gVar)}</b>; tu plan a esta fecha era ${clp(planHoy)}. ${rapido?`Vas <b>${Math.round((A.gVar/planHoy-1)*100)}% por sobre el plan</b>.`:'Vas dentro de lo planificado.'}`);
+    }
+    const sobra=A.ingresos-A.proy;
+    add(sobra<0?'mal':'info',`Si sigues a este ritmo, terminarás el mes gastando cerca de <b>${clp(A.proy)}</b>, ${sobra<0?`<span class="neg">${clp(-sobra)} más de lo que ganas</span>`:`y te quedarían <b>${clp(sobra)}</b> (${Math.round(sobra/A.ingresos*100)}% de tus ingresos)`}.`);
+  }else if(A.ingresos){
+    const quedo=A.ingresos-A.gastado;
+    add(quedo<0?'mal':'ok',`Gastaste el <b>${Math.round(pctGastado)}%</b> de tus ingresos. ${quedo<0?`Terminaste el mes con un déficit de <b class="neg">${clp(-quedo)}</b>.`:`Te quedaron <b>${clp(quedo)}</b> (${Math.round(quedo/A.ingresos*100)}%).`}`);
+  }
+  // 2. Item principal
+  const top=[...A.cats].sort((a,b)=>b.gasto-a.gasto)[0];
+  add('info',`Tu mayor gasto es <b>${esc(top.nombre)}</b>: ${clp(top.gasto)}, el ${Math.round(top.gasto/A.gastado*100)}% de todo lo que gastaste${A.ingresos?` y el ${Math.round(top.gasto/A.ingresos*100)}% de tus ingresos`:''}.`);
+  // 3. Excesos y alertas
+  if(A.s){
+    const pasados=A.cats.filter(c=>c.gasto>c.asignado&&c.gasto>0);
+    if(pasados.length) add('mal',`Te pasaste del presupuesto en ${pasados.map(c=>`<b>${esc(c.nombre)}</b> (+${clp(c.gasto-c.asignado)})`).join(', ')}.`);
+    if(A.actual){
+      const enRiesgo=A.cats.filter(c=>c.asignado>0&&c.gasto<=c.asignado&&c.gasto/c.asignado*100>pctMes+20&&c.gasto/c.asignado>=0.6);
+      if(enRiesgo.length) add('mal',`Cuidado con ${enRiesgo.map(c=>`<b>${esc(c.nombre)}</b> (usaste ${Math.round(c.gasto/c.asignado*100)}%)`).join(', ')}: vas adelantado respecto al avance del mes.`);
+    }
+    if(!pasados.length) add('ok','No te has pasado del presupuesto en ningún item.');
+  }
+  // 4. Comparación con el mes anterior a la misma altura
+  const prev=moverMes(mes,-1), diaComp=Math.min(A.dia,diasDelMes(prev));
+  const prevHasta=D.gastos.filter(g=>g.fecha.startsWith(prev)&&+g.fecha.slice(8,10)<=diaComp).reduce((a,g)=>a+g.monto,0);
+  if(prevHasta){
+    const dif=(A.gastado-prevHasta)/prevHasta*100;
+    add(dif>10?'mal':dif<-10?'ok':'info',`${A.actual?`A esta altura de ${esc(nombreMes(prev,false).toLowerCase())}`:`En ${esc(nombreMes(prev,false).toLowerCase())}`} habías gastado ${clp(prevHasta)}: ahora vas <b>${Math.abs(Math.round(dif))}% ${dif>=0?'más':'menos'}</b>.`);
+  }
+  // 5. Ahorro frente a la meta
+  if(A.s){
+    const metaPct=100-A.cats.reduce((a,c)=>a+c.porcentaje,0);
+    const ahorroPct=(A.ingresos-A.proy)/A.ingresos*100;
+    if(metaPct>0) add(ahorroPct>=metaPct?'ok':'info',`Tu plan deja un <b>${Math.round(metaPct)}%</b> del sueldo sin asignar para ahorro. ${A.actual?'Con el ritmo actual ahorrarías':'Ahorraste'} cerca del <b>${Math.max(0,Math.round(ahorroPct))}%</b>.`);
+  }
+  $('concl').innerHTML=L.join('');
+}
+
 // ===== Navegación =====
 $('mprev').onclick=()=>{ mes=moverMes(mes,-1); render(); };
 $('mnext').onclick=()=>{ mes=moverMes(mes,1); render(); };
@@ -516,6 +739,7 @@ function render(){
   $('mnext').disabled=mes>=hoyMes();
   $('mesnav').hidden=view==='reg';
   if(view==='res') renderRes();
+  if(view==='ana') renderAna();
   if(view==='reg') renderReg();
   if(view==='ing') renderIng();
   if(view==='mov') renderMov();
@@ -524,10 +748,11 @@ function render(){
 function show(v){
   view=v;
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-  ['res','reg','ing','mov','aj'].forEach(x=>$('v-'+x).hidden=x!==v);
+  ['res','ana','reg','ing','mov','aj'].forEach(x=>$('v-'+x).hidden=x!==v);
   render(); window.scrollTo(0,0);
 }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+addEventListener('resize',()=>{ if(view==='ana') renderLinea(datosAnalisis()); });
 cargar();
 </script>
 </body>
