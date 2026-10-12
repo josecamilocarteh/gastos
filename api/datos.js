@@ -62,9 +62,12 @@ function limpiarCats(cs) {
   for (const c of cs) {
     const nombre = typeof c?.nombre === 'string' ? c.nombre.trim().slice(0, 40) : '';
     const p = Math.min(100, Math.max(0, Number(c?.porcentaje) || 0));
+    const m = Math.min(1e10, Math.max(0, Math.round(Number(c?.monto) || 0)));
     if (!ID.test(String(c?.id)) || !nombre || ids.has(c.id)) return null;
     ids.add(c.id);
-    out.push({ id: String(c.id), nombre, porcentaje: Math.round(p * 10) / 10 });
+    // Cada item se asigna como porcentaje del sueldo o como monto fijo.
+    const modo = c?.modo === 'monto' ? 'monto' : 'pct';
+    out.push({ id: String(c.id), nombre, modo, porcentaje: Math.round(p * 10) / 10, monto: m });
   }
   return out;
 }
@@ -72,7 +75,13 @@ function limpiarCats(cs) {
 function normalizar(d) {
   const cats = Array.isArray(d?.categorias) && d.categorias.length ? d.categorias : CATS_INICIALES;
   return {
-    categorias: cats.map((c) => ({ id: c.id, nombre: c.nombre, porcentaje: Number(c.porcentaje) || 0 })),
+    categorias: cats.map((c) => ({
+      id: c.id,
+      nombre: c.nombre,
+      modo: c.modo === 'monto' ? 'monto' : 'pct',
+      porcentaje: Number(c.porcentaje) || 0,
+      monto: Number(c.monto) || 0,
+    })),
     gastos: Array.isArray(d?.gastos) ? d.gastos : [],
     ingresos: Array.isArray(d?.ingresos) ? d.ingresos : [],
     sueldos: d?.sueldos && typeof d.sueldos === 'object' ? d.sueldos : {},
