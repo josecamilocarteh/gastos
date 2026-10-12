@@ -6,9 +6,9 @@ const RUTA = 'gastos/datos.json';
 
 // Porcentajes sugeridos del sueldo (se pueden cambiar en la app).
 const CATS_INICIALES = [
-  { id: 'vivienda', nombre: 'Vivienda (arriendo o dividendo)', porcentaje: 25 },
+  { id: 'vivienda', nombre: 'Vivienda (arriendo o dividendo)', porcentaje: 25, fijo: true },
   { id: 'supermercado', nombre: 'Supermercado', porcentaje: 15 },
-  { id: 'cuentas', nombre: 'Cuentas (luz, agua, internet)', porcentaje: 10 },
+  { id: 'cuentas', nombre: 'Cuentas (luz, agua, internet)', porcentaje: 10, fijo: true },
   { id: 'transporte', nombre: 'Transporte', porcentaje: 8 },
   { id: 'comida-fuera', nombre: 'Comida fuera', porcentaje: 5 },
   { id: 'salud', nombre: 'Salud', porcentaje: 5 },
@@ -67,13 +67,31 @@ function limpiarCats(cs) {
     ids.add(c.id);
     // Cada item se asigna como porcentaje del sueldo o como monto fijo.
     const modo = c?.modo === 'monto' ? 'monto' : 'pct';
-    out.push({ id: String(c.id), nombre, modo, porcentaje: Math.round(p * 10) / 10, monto: m });
+    out.push({ id: String(c.id), nombre, modo, porcentaje: Math.round(p * 10) / 10, monto: m, fijo: c?.fijo === true });
   }
   return out;
 }
 
+// Día de pago: un número del 1 al 31, o 'ultimo' para el último día hábil del mes.
+function diaPagoValido(v) {
+  if (v === 'ultimo') return 'ultimo';
+  const n = Number(v);
+  return Number.isInteger(n) && n >= 1 && n <= 31 ? n : null;
+}
+
+// Meta de ahorro: porcentaje del sueldo o monto fijo en pesos.
+function ahorroValido(a) {
+  if (!a || typeof a !== 'object') return null;
+  const modo = a.modo === 'monto' ? 'monto' : 'pct';
+  const v = Number(a.valor);
+  if (!Number.isFinite(v) || v < 0) return null;
+  return modo === 'pct' ? { modo, valor: Math.min(100, Math.round(v * 10) / 10) } : { modo, valor: Math.min(1e10, Math.round(v)) };
+}
+
 function normalizar(d) {
   const cats = Array.isArray(d?.categorias) && d.categorias.length ? d.categorias : CATS_INICIALES;
+  // Datos guardados antes de existir la marca "fijo": vivienda y cuentas parten como fijos.
+  const sinMarca = !cats.some((c) => 'fijo' in c);
   return {
     categorias: cats.map((c) => ({
       id: c.id,
@@ -81,10 +99,15 @@ function normalizar(d) {
       modo: c.modo === 'monto' ? 'monto' : 'pct',
       porcentaje: Number(c.porcentaje) || 0,
       monto: Number(c.monto) || 0,
+      fijo: sinMarca ? ['vivienda', 'cuentas'].includes(c.id) : c.fijo === true,
     })),
     gastos: Array.isArray(d?.gastos) ? d.gastos : [],
     ingresos: Array.isArray(d?.ingresos) ? d.ingresos : [],
     sueldos: d?.sueldos && typeof d.sueldos === 'object' ? d.sueldos : {},
+    config: {
+      diaPago: diaPagoValido(d?.config?.diaPago) ?? 1,
+      ahorro: ahorroValido(d?.config?.ahorro) ?? { modo: 'pct', valor: 20 },
+    },
   };
 }
 
@@ -169,6 +192,24 @@ export async function POST(req) {
       const m = monto(body.monto);
       if (m) d.sueldos[body.mes] = m;
       else delete d.sueldos[body.mes];
+      break;
+    }
+    case 'config': {
+      const dp = diaPagoValido(body.diaPago);
+      if (dp === null) return json({ error: 'Día de pago inválido' }, 400);
+      d.config = { ...d.config, diaPago: dp };
+      break;
+    }
+    case 'plan': {
+      const cs = limpiarCats(body.categorias);
+      const ah = ahorroValido(body.ahorro);
+      if (!cs || !ah) return json({ error: 'El plan tiene datos inválidos' }, 400);
+      const quedan = new Set(cs.map((c) => c.id));
+      if (d.gastos.some((g) => !quedan.has(g.cat))) {
+        return json({ error: 'No se puede borrar un item que tiene gastos registrados' }, 400);
+      }
+      d.categorias = cs;
+      d.config = { ...d.config, ahorro: ah };
       break;
     }
     case 'items': {
