@@ -16,8 +16,12 @@
   color-scheme:light;
   --bg:#FFFFFF; --panel:#F8FAFC; --chip:#F1F5F9; --line:#E2E8F0; --line2:#CBD5E1;
   --fg:#0F172A; --text2:#475569; --muted:#64748B; --faint:#94A3B8;
-  --azul:#1E40AF; --azul-soft:#EFF4FF; --teal:#0F766E; --teal-soft:#ECFDF8;
-  --verde:#047857; --rojo:#DC2626; --rojo-soft:#FEF2F2;
+  --azul:#1C70CF; --azul-soft:#EEF4FD; --navy:#1F3B8A; --violeta:#7D3BED; --granate:#801C1C;
+  --teal:#0B8A5F; --teal-soft:#ECFDF5;
+  /* Estados, como en el documento: A favor (verde), En contra (rojo), Abstención (amarillo) */
+  --verde-f:#0FBA82; --verde-bg:#DBFCE8; --verde-bd:#87F0AB; --verde:#047857;
+  --rojo-f:#F04545; --rojo-bg:#FFE3E3; --rojo-bd:#FCA6A6; --rojo:#C81E1E; --rojo-soft:#FFE3E3;
+  --amar-f:#FABF24; --amar-bg:#FFF2C7; --amar-bd:#FCD478; --amar:#8A6100;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --serif:'Playfair Display',Georgia,'Times New Roman',serif;
 }
@@ -34,7 +38,7 @@ h1{font-family:var(--serif);font-weight:700;font-size:22px;margin:2px 0 0;color:
 .sync{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:0 5px}
 nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 nav button{flex:1 1 calc(33% - 6px);padding:8px 10px;border:0;border-radius:8px;background:var(--chip);color:var(--text2);font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
-nav button.on{background:var(--c,var(--azul));color:#fff;box-shadow:0 2px 8px rgba(30,64,175,.25)}
+nav button.on{background:var(--c,var(--azul));color:#fff;box-shadow:0 2px 8px rgba(15,23,42,.22)}
 button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-within{outline:2px solid var(--azul);outline-offset:2px}
 main{max-width:720px;margin:0 auto;padding-block:18px 48px;padding-inline:16px;display:grid;gap:14px}
 section{display:grid;gap:14px;min-width:0}
@@ -49,7 +53,11 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{position:relative;background:var(--chip);color:var(--text2);border-radius:8px;padding:8px 12px;font-size:14px;font-weight:500;cursor:pointer;user-select:none}
 .chip input{position:absolute;opacity:0;pointer-events:none}
-.chip:has(input:checked){background:var(--azul);color:#fff;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:7px}
+.chip .dot{width:10px;height:10px;border-radius:50%;background:var(--ic);flex:none}
+.chip:has(input:checked){background:var(--ic);color:var(--ict,#fff);font-weight:600}
+.chip:has(input:checked) .dot{background:var(--ict,#fff);opacity:.85}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
 .btn{background:var(--azul);color:#fff;border:0;border-radius:8px;padding:12px 16px;font:inherit;font-weight:600;cursor:pointer}
 .btn.teal{background:var(--teal)}
 .btn.sec{background:var(--bg);color:var(--azul);border:1.5px solid var(--azul)}
@@ -61,14 +69,18 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .nb{background:var(--chip);color:var(--text2);border:0;border-radius:8px;width:42px;height:38px;font-size:20px;cursor:pointer}
 .nb:disabled{opacity:.35;cursor:default}
 /* Resumen */
-.hero{background:var(--teal-soft);border:1px solid #CCEFE4;border-radius:12px;padding:16px}
-.hero .lab{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.hero{background:var(--verde-bg);border:1.5px solid var(--verde-bd);border-radius:12px;padding:16px}
+.hero .lab{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--verde);font-weight:700}
 .hero .val{font-size:34px;font-weight:700;color:var(--fg);margin:2px 0 4px}
 .hero .det{font-size:13px;color:var(--text2)}
-.hero .pago{margin-top:8px;padding-top:8px;border-top:1px solid #CCEFE4}
+.hero .pago{margin-top:8px;padding-top:8px;border-top:1px solid var(--verde-bd)}
 .hero form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:8px}
 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.kpi{border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;min-width:0}
+.kpi{border:1.5px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;min-width:0}
+.kpi span{font-weight:600}
+.kpi.k-ing{background:var(--verde-bg);border-color:var(--verde-bd)}.kpi.k-ing span,.kpi.k-ing b{color:var(--verde)}
+.kpi.k-gas{background:var(--rojo-bg);border-color:var(--rojo-bd)}.kpi.k-gas span,.kpi.k-gas b{color:var(--rojo)}
+.kpi.k-sal{background:var(--amar-bg);border-color:var(--amar-bd)}.kpi.k-sal span,.kpi.k-sal b{color:var(--amar)}
 .kpi b{display:block;font-size:17px;font-weight:700;overflow-wrap:anywhere}
 .kpi span{font-size:12px;color:var(--muted)}
 .pos{color:var(--verde)!important}.neg{color:var(--rojo)!important}
@@ -80,10 +92,12 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .it .as{font-weight:600;white-space:nowrap}
 .it .r2{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted)}
 .bar{height:7px;background:var(--chip);border-radius:4px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--azul);border-radius:4px}
-.bar i.over{background:var(--rojo)}
-.libre{display:flex;justify-content:space-between;gap:10px;padding:12px;margin-top:6px;background:var(--panel);border-radius:8px;font-size:14px}
-.libre b{color:var(--teal)}
+.bar{height:9px}
+.bar i{display:block;height:100%;background:var(--ic,var(--azul));border-radius:4px}
+.bar i.over{background:repeating-linear-gradient(135deg,var(--rojo-f) 0 6px,#F87171 6px 12px)}
+.it .nm .dot{margin-right:7px;vertical-align:1px}
+.libre{display:flex;justify-content:space-between;gap:10px;padding:12px;margin-top:6px;background:var(--verde-bg);border:1.5px solid var(--verde-bd);border-radius:8px;font-size:14px}
+.libre b{color:var(--verde)}
 /* Listas */
 .dia{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;padding:14px 0 6px;border-bottom:1px solid var(--line)}
 .g{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
@@ -99,8 +113,8 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .stack-bar{display:flex;gap:2px;height:44px;border-radius:8px;overflow:hidden;background:var(--bg)}
 .stack-bar .seg{height:100%;min-width:3px;cursor:pointer;transition:opacity .15s}
 .stack-bar:hover .seg{opacity:.55}.stack-bar .seg:hover,.stack-bar .seg.act{opacity:1}
-.seg.libre-seg{background:repeating-linear-gradient(135deg,#D7F2E9 0 6px,#ECFDF8 6px 12px);border:1.5px solid #9FD9C6}
-.seg.def-seg{background:repeating-linear-gradient(135deg,#FECACA 0 6px,#FEF2F2 6px 12px);border:1.5px solid var(--rojo)}
+.seg.libre-seg{background:repeating-linear-gradient(135deg,var(--verde-bg) 0 6px,#F0FDF6 6px 12px);border:1.5px solid var(--verde-f)}
+.seg.def-seg{background:repeating-linear-gradient(135deg,var(--rojo-bg) 0 6px,#FFF5F5 6px 12px);border:1.5px solid var(--rojo-f)}
 .escala{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:6px}
 .leyenda{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
 .leyenda td{padding:7px 4px;border-bottom:1px solid var(--line)}
@@ -118,13 +132,13 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .concl{margin:0;padding:0;list-style:none;display:grid;gap:10px}
 .concl li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:14.5px;line-height:1.45}
 .concl .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;background:var(--azul)}
-.concl .ic.ok{background:var(--verde)}.concl .ic.mal{background:var(--rojo)}.concl .ic.info{background:var(--muted)}
+.concl .ic.ok{background:var(--verde-f)}.concl .ic.mal{background:var(--rojo-f)}.concl .ic.av{background:var(--amar-f);color:#3D2B00}.concl .ic.info{background:var(--azul)}
 /* Plan */
 .pl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:14.5px}
 .pl .k{color:var(--text2)}.pl .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
 .pl .sub{padding-left:14px;color:var(--muted);font-size:13.5px}.pl .sub.v{font-weight:500}
 .pl .tot{border-top:1px solid var(--line);padding-top:6px;margin-top:2px;font-weight:700;color:var(--fg)}
-.diario{margin-top:14px;background:var(--azul-soft);border-radius:10px;padding:14px;display:grid;gap:4px}
+.diario{margin-top:14px;background:var(--azul-soft);border:1.5px solid #B9D3F3;border-radius:10px;padding:14px;display:grid;gap:4px}
 .diario .lab{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--azul);font-weight:600}
 .diario .val{font-size:28px;font-weight:700}
 .diario .det{font-size:13px;color:var(--text2)}
@@ -136,16 +150,21 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 .ahorro-row .val .u{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted)}
 .ahorro-row .val.monto input{padding-left:24px;padding-right:10px}.ahorro-row .val.monto .u{left:10px;right:auto}
 .ahorro-row .amt{font-size:12.5px;color:var(--muted);text-align:right}
+.colbtn{grid-area:cl;width:38px;height:30px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--line2);cursor:pointer;background:var(--ic)}
 .fijo{grid-area:fj;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;user-select:none}
 .fijo input{width:18px;height:18px;accent-color:var(--azul)}
-.hoy{border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px}
+.hoy{background:var(--azul-soft);border:1.5px solid #B9D3F3;border-radius:12px;padding:16px;display:grid;gap:10px}
 .hoy .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .hoy .lab{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--azul);font-weight:600}
 .hoy .val{font-size:28px;font-weight:700}
 .hoy .det{font-size:13.5px;color:var(--text2)}
 .linkbtn{background:none;border:0;padding:0;color:var(--azul);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:underline}
+/* Por día */
+.pordia{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--azul-soft);border:1.5px solid #B9D3F3;border-radius:12px;padding:12px 14px;font-size:14px;color:var(--text2)}
+.pordia b{display:block;font-size:22px;color:var(--fg);font-variant-numeric:tabular-nums}
+.pordia .r{text-align:right}
 /* Items */
-.catrow{display:grid;grid-template-columns:auto minmax(0,128px) minmax(0,1fr) 38px;grid-template-areas:"nm nm nm x" "md val eq eq" "fj fj fj fj";gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.catrow{display:grid;grid-template-columns:auto minmax(0,128px) minmax(0,1fr) 38px;grid-template-areas:"nm nm nm x" "md val eq eq" "fj fj fj cl";gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .catrow:last-child{border-bottom:0}
 .catrow .nmi{grid-area:nm;font-weight:600}
 .catrow .x{grid-area:x}
@@ -189,12 +208,12 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
     <h1>Mis gastos</h1>
     <div class="hsub"><span id="sub"></span><span class="sync" id="sync">Cargando</span></div>
     <nav>
-      <button data-v="res" class="on">Resumen</button>
-      <button data-v="ana">Análisis</button>
-      <button data-v="reg">Registrar gasto</button>
+      <button data-v="res" class="on" style="--c:var(--navy)">Resumen</button>
+      <button data-v="ana" style="--c:var(--violeta)">Análisis</button>
+      <button data-v="reg" style="--c:var(--azul)">Registrar gasto</button>
       <button data-v="ing" style="--c:var(--teal)">Ingresos</button>
-      <button data-v="mov">Movimientos</button>
-      <button data-v="aj">Mi plan</button>
+      <button data-v="mov" style="--c:#0B7FB0">Movimientos</button>
+      <button data-v="aj" style="--c:var(--granate)">Mi plan</button>
     </nav>
   </div>
 </header>
@@ -240,6 +259,7 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
 
   <!-- REGISTRAR -->
   <section id="v-reg" hidden>
+    <div class="pordia" id="porDiaReg" hidden></div>
     <form class="card stack" id="fGasto" novalidate>
       <div>
         <label class="f" for="g-monto">Monto del gasto (CLP)</label>
@@ -318,7 +338,7 @@ input[type=text],input[type=date],input[type=password],select{width:100%;padding
     </div>
     <div class="card">
       <h2>2. Cuánto le toca a cada item</h2>
-      <p class="muted" style="margin-top:-4px">Asigna a cada item un <b>porcentaje</b> del sueldo o un <b>monto fijo</b>. Marca como <b>fijo</b> lo que pagas una vez al período (arriendo, cuentas, colegio): eso no se reparte por día. El resto es tu gasto del día a día. Los cálculos usan tu sueldo de <span id="aj-mes"></span>.</p>
+      <p class="muted" style="margin-top:-4px">Asigna a cada item un <b>porcentaje</b> del sueldo o un <b>monto fijo</b>. Marca como <b>fijo</b> lo que pagas una vez al período (arriendo, cuentas, colegio): eso no se reparte por día. El resto es tu gasto del día a día. Toca el cuadro de color para cambiar el color del item. Los cálculos usan tu sueldo de <span id="aj-mes"></span>.</p>
       <div id="cats"></div>
       <div class="row" style="margin-top:12px">
         <button class="btn sec" type="button" id="addCat">Agregar item</button>
@@ -398,6 +418,12 @@ function sueldoDe(m){
 // Un item se asigna como % del sueldo o como monto fijo en pesos.
 const asignadoDe=(c,base)=>c.modo==='monto'?(c.monto||0):base*(c.porcentaje||0)/100;
 const pctDe=(c,base)=>c.modo==='monto'?(base?(c.monto||0)/base*100:0):(c.porcentaje||0);
+// ===== Colores de items (tomados del documento de votación, sin los naranjos) =====
+const PALETA=['#1C70CF','#0FBA82','#7D3BED','#FABF24','#E878A1','#05B5D4','#1F3B8A','#21C45E','#801C1C','#0DA6E8'];
+const colorDe=(c,i)=>c&&c.color?c.color:PALETA[((i%PALETA.length)+PALETA.length)%PALETA.length];
+function textoSobre(hex){ const n=parseInt(hex.slice(1),16), r=(n>>16&255)/255, g=(n>>8&255)/255, b=(n&255)/255;
+  const L=x=>x<=0.03928?x/12.92:((x+0.055)/1.055)**2.4; return 0.2126*L(r)+0.7152*L(g)+0.0722*L(b)>0.36?'#0F172A':'#FFFFFF'; }
+
 // ===== Plan =====
 // Sueldo − meta de ahorro = lo que puedes gastar. Eso se reparte entre items fijos (se pagan una vez)
 // y items del día a día, que se dividen por los días del período para obtener el presupuesto diario.
@@ -454,7 +480,8 @@ function fila(m,tipo,conFecha){
   const titulo=m.nota||(ing?'Ingreso':catNombre(m.cat));
   const etiqueta=ing?'Ingreso':catNombre(m.cat);
   const bajada=conFecha?`${etiqueta} · ${fechaLarga(m.fecha)}`:etiqueta;
-  return `<div class="g"><div class="gt"><b>${esc(titulo)}</b><span>${esc(bajada)}</span></div><div class="gm num ${ing?'pos':''}">${ing?'+':''}${clp(m.monto)}</div><button class="del" type="button" data-id="${esc(m.id)}" data-tipo="${tipo}">Eliminar</button></div>`;
+  const col=ing?'var(--verde-f)':colorDe(D.categorias.find(c=>c.id===m.cat)||{},D.categorias.findIndex(c=>c.id===m.cat));
+  return `<div class="g"><div class="gt"><b><span class="dot" style="background:${col};margin-right:8px;vertical-align:1px"></span>${esc(titulo)}</b><span>${esc(bajada)}</span></div><div class="gm num ${ing?'pos':''}">${ing?'+':''}${clp(m.monto)}</div><button class="del" type="button" data-id="${esc(m.id)}" data-tipo="${tipo}">Eliminar</button></div>`;
 }
 function onDelete(e){
   const b=e.target.closest('.del'); if(!b) return;
@@ -470,20 +497,48 @@ function onDelete(e){
 ['ultimos','detalle','listaIng'].forEach(id=>$(id).addEventListener('click',onDelete));
 
 // ===== Resumen =====
+// Cuánto puedes gastar por día con el dinero que te queda (período actual).
+// Libre = ingresos − lo ya gastado − gastos fijos que faltan por pagar − meta de ahorro.
+function disponibleDiario(){
+  const m=hoyMes(), s=sueldoDe(m).monto; if(!s) return null;
+  const ingresos=s+suma(ingresosMes(m)), gs=gastosMes(m), h=hoy();
+  const dias=diasPeriodo(m), dia=difDias(inicioP(m),h)+1, restantes=dias-dia+1;
+  const fijosPend=D.categorias.filter(c=>c.fijo).reduce((a,c)=>a+Math.max(0,asignadoDe(c,s)-suma(gs.filter(g=>g.cat===c.id))),0);
+  const fijoIds=new Set(D.categorias.filter(c=>c.fijo).map(c=>c.id));
+  const meta=ahorroDe(ahorroCfg(),s);
+  const gastado=suma(gs), hoyG=suma(gs.filter(g=>g.fecha===h&&!fijoIds.has(g.cat)));
+  const libreAhora=ingresos-gastado-fijosPend-meta;           // después de lo gastado hoy
+  const libreInicioHoy=libreAhora+hoyG;                        // como estabas al empezar el día
+  const hoyPuede=libreInicioHoy/restantes;                     // presupuesto de hoy
+  const desdeManana=restantes>1?libreAhora/(restantes-1):null;
+  const sinAhorro=(ingresos-gastado-fijosPend)/restantes;
+  const P=calcPlan(D.categorias,ahorroCfg(),s,m);
+  return {ingresos,gastado,fijosPend,meta,libreAhora,libreInicioHoy,hoyPuede,desdeManana,sinAhorro,restantes,dia,dias,hoyG,diario:P.diario,sig:inicioP(moverMes(m,1))};
+}
+const fLarga=f=>aFecha(f).toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
 function renderHoy(base){
-  const el=$('hoyCard');
-  if(!base||mes!==hoyMes()){ el.hidden=true; return; }
-  const P=calcPlan(D.categorias,ahorroCfg(),base,mes), fijoIds=new Set(D.categorias.filter(c=>c.fijo).map(c=>c.id));
-  const ini=inicioP(mes), dia=difDias(ini,hoy())+1, restantes=P.dias-dia+1, h=hoy();
-  const varG=gastosMes(mes).filter(g=>!fijoIds.has(g.cat));
-  const antes=suma(varG.filter(g=>g.fecha<h)), hoyG=suma(varG.filter(g=>g.fecha===h));
-  const debiaAntes=P.diario*(dia-1), dif=antes-debiaAntes;
-  const hoyPuede=Math.max(0,(P.variable-antes)/restantes), queda=hoyPuede-hoyG;
+  const el=$('hoyCard'), X=mes===hoyMes()?disponibleDiario():null;
+  if(!X){ el.hidden=true; return; }
   el.hidden=false;
-  el.innerHTML=`<div class="top"><span class="lab">Para gastar hoy</span><span class="muted">día ${dia} de ${P.dias}</span></div>
-    <div class="top"><span class="val num">${clp(hoyPuede)}</span><span class="num ${queda<0?'neg':'pos'}" style="font-weight:600">${queda<0?'Te pasaste por '+clp(-queda):'Te quedan '+clp(queda)}</span></div>
-    <div class="det">Hoy llevas ${clp(hoyG)} en gastos del día a día. Tu plan diario es <b>${clp(P.diario)}</b>; ${Math.abs(dif)<1?'vas justo en el plan':dif>0?`hasta ayer gastaste <b class="neg">${clp(dif)} más</b> que el plan, así que hoy te toca un poco menos`:`hasta ayer gastaste <b class="pos">${clp(-dif)} menos</b> que el plan, así que hoy tienes un poco más`}.</div>
-    <div><button class="linkbtn" type="button" id="verPlan">Ver cómo se calcula tu plan</button></div>`;
+  if(X.libreInicioHoy<=0){
+    el.innerHTML=`<div class="top"><span class="lab">Cuánto puedes gastar por día</span><span class="muted">${X.restantes} días hasta tu pago</span></div>
+      <div class="val num neg">$0</div>
+      <div class="det">Con lo que gastaste y los fijos por pagar, ya no te queda dinero libre sin tocar tu meta de ahorro (${clp(X.meta)}). ${X.sinAhorro>0?`Si usas el ahorro, tendrías <b>${clp(X.sinAhorro)} por día</b>.`:'<span class="neg">Ya gastaste más de lo que ganaste en este período.</span>'}</div>
+      <div><button class="linkbtn" type="button" id="verPlan">Revisar mi plan</button></div>`;
+    $('verPlan').onclick=()=>show('aj'); return;
+  }
+  const queda=X.hoyPuede-X.hoyG, vsPlan=X.hoyPuede-X.diario;
+  el.innerHTML=`<div class="top"><span class="lab">Cuánto puedes gastar por día</span><span class="muted">${X.restantes} día${X.restantes===1?'':'s'} hasta tu pago</span></div>
+    <div class="top"><span class="val num">${clp(X.hoyPuede)}</span><span class="num ${queda<0?'neg':'pos'}" style="font-weight:600">${queda<0?'Hoy te pasaste por '+clp(-queda):'Hoy te quedan '+clp(queda)}</span></div>
+    <div class="pl" style="font-size:13.5px">
+      <span class="k">Te quedan de tus ingresos</span><span class="v">${clp(X.ingresos-X.gastado+X.hoyG)}</span>
+      <span class="k">− Gastos fijos por pagar</span><span class="v">${clp(X.fijosPend)}</span>
+      <span class="k">− Meta de ahorro</span><span class="v">${clp(X.meta)}</span>
+      <span class="k tot">= Libre para el día a día</span><span class="v tot">${clp(X.libreInicioHoy)}</span>
+      <span class="k sub">÷ ${X.restantes} día${X.restantes===1?'':'s'} (hasta el ${esc(fLarga(X.sig))}, sin contarlo)</span><span class="v sub">${clp(X.hoyPuede)} por día</span>
+    </div>
+    <div class="det">Hoy llevas ${clp(X.hoyG)} en gastos del día a día.${X.desdeManana!==null?` Si no gastas más hoy, desde mañana tendrás <b>${clp(X.desdeManana)} por día</b>.`:' Mañana recibes tu pago.'} ${Math.abs(vsPlan)<1?'Es justo tu plan diario.':vsPlan>0?`Es <b class="pos">${clp(vsPlan)} más</b> que tu plan diario de ${clp(X.diario)}.`:`Es <b class="neg">${clp(-vsPlan)} menos</b> que tu plan diario de ${clp(X.diario)}.`}</div>
+    <div><button class="linkbtn" type="button" id="verPlan">Ver mi plan</button></div>`;
   $('verPlan').onclick=()=>show('aj');
 }
 function lineaPago(){
@@ -510,21 +565,21 @@ function renderRes(){
     $('heroForm').addEventListener('submit',e=>{ e.preventDefault(); guardarSueldo(digitos($('h-monto').value),$('h-status')); });
   }
   $('kpis').innerHTML=`
-    <div class="kpi"><b class="num pos">${clp(ingresos)}</b><span>ingresos</span></div>
-    <div class="kpi"><b class="num">${clp(gastado)}</b><span>gastado</span></div>
-    <div class="kpi"><b class="num ${saldo<0?'neg':''}">${clp(saldo)}</b><span>${saldo<0?'déficit':'saldo'}</span></div>`;
+    <div class="kpi k-ing"><span>Ingresos</span><b class="num">${clp(ingresos)}</b></div>
+    <div class="kpi k-gas"><span>Gastado</span><b class="num">${clp(gastado)}</b></div>
+    <div class="kpi ${saldo<0?'k-gas':'k-sal'}"><span>${saldo<0?'Déficit':'Saldo'}</span><b class="num">${clp(saldo)}</b></div>`;
   renderHoy(s.monto);
   const base=s.monto;
   let h='', asignadoMonto=0;
-  for(const c of D.categorias){
-    const asignado=asignadoDe(c,base), gasto=suma(gastosMes(mes,c.id));
+  for(const [i,c] of D.categorias.entries()){
+    const col=colorDe(c,i), asignado=asignadoDe(c,base), gasto=suma(gastosMes(mes,c.id));
     asignadoMonto+=asignado;
     if(!asignado&&!gasto) continue;
     const over=asignado?gasto>asignado:gasto>0;
     const w=asignado?Math.min(100,gasto/asignado*100):(gasto?100:0);
     const resto=asignado-gasto;
     const r2=!base?`Gastado ${clp(gasto)}`:over?`<span class="neg">Te pasaste por ${clp(-resto)}</span>`:`Quedan ${clp(resto)}`;
-    h+=`<div class="it"><div class="r1"><span class="nm">${esc(c.nombre)}<span class="pc">${c.modo==='monto'?'monto fijo':pct(c.porcentaje)}</span></span><span class="as num">${base?clp(asignado):'–'}</span></div>
+    h+=`<div class="it" style="--ic:${col}"><div class="r1"><span class="nm"><span class="dot" style="background:${col}"></span>${esc(c.nombre)}<span class="pc">${c.modo==='monto'?'monto fijo':pct(c.porcentaje)}</span></span><span class="as num">${base?clp(asignado):'–'}</span></div>
       <div class="bar"><i class="${over?'over':''}" style="width:${w}%"></i></div>
       <div class="r2"><span class="num">Gastado ${clp(gasto)}</span><span class="num">${base?r2:''}</span></div></div>`;
   }
@@ -543,9 +598,17 @@ async function guardarSueldo(monto,st){
 }
 
 // ===== Registrar gasto =====
+function renderPorDiaReg(){
+  const X=disponibleDiario(), el=$('porDiaReg');
+  if(!X){ el.hidden=true; return; }
+  el.hidden=false;
+  const v=Math.max(0,X.hoyPuede), queda=X.hoyPuede-X.hoyG;
+  el.innerHTML=`<div>Puedes gastar por día<b>${clp(v)}</b></div><div class="r">Hoy ${queda<0?`te pasaste por<b class="neg">${clp(-queda)}</b>`:`te quedan<b class="pos">${clp(queda)}</b>`}</div>`;
+}
 function renderReg(){
+  renderPorDiaReg();
   if(!catSel||!D.categorias.some(c=>c.id===catSel)) catSel=D.categorias[0]?.id||null;
-  $('g-cats').innerHTML=D.categorias.map(c=>`<label class="chip"><input type="radio" name="cat" value="${esc(c.id)}" ${c.id===catSel?'checked':''}>${esc(c.nombre)}</label>`).join('');
+  $('g-cats').innerHTML=D.categorias.map((c,i)=>{ const col=colorDe(c,i); return `<label class="chip" style="--ic:${col};--ict:${textoSobre(col)}"><input type="radio" name="cat" value="${esc(c.id)}" ${c.id===catSel?'checked':''}><span class="dot"></span>${esc(c.nombre)}</label>`; }).join('');
   if(!$('g-fecha').value) $('g-fecha').value=hoy();
   const u=[...D.gastos].sort(orden).slice(0,6);
   $('ultimos').innerHTML=u.length?u.map(g=>fila(g,'gas',true)).join(''):'<p class="empty">Todavía no hay gastos. Anota el primero arriba.</p>';
@@ -563,7 +626,8 @@ $('fGasto').addEventListener('submit',async e=>{
   $('g-btn').disabled=true; st.className='status'; st.textContent='Guardando…';
   try{
     await enviar({op:'agregar',gasto:g});
-    st.textContent=`Agregado: ${clp(monto)} en ${catNombre(g.cat)}.`;
+    const X=periodoDe(g.fecha)===hoyMes()?disponibleDiario():null;
+    st.textContent=`Agregado: ${clp(monto)} en ${catNombre(g.cat)}.`+(X?(X.libreAhora>0?` Con lo que te queda puedes gastar ${clp(X.desdeManana??X.libreAhora)} por día ${X.desdeManana!==null?'desde mañana':'hoy'} hasta tu próximo pago.`:' Ya no te queda dinero libre sin tocar tu meta de ahorro.'):'');
     $('g-monto').value=''; $('g-nota').value=''; $('g-fecha').value=hoy();
     render(); $('g-monto').focus();
   }catch(err){ st.className='status err'; st.textContent=err.msg||'No se pudo guardar. Revisa tu conexión e intenta de nuevo.'; }
@@ -638,7 +702,7 @@ function equivalente(c,base){
 function valorCampo(c){ return c.modo==='monto'?(c.monto?c.monto.toLocaleString('es-CL'):''):(c.porcentaje?String(c.porcentaje).replace('.',','):''); }
 let ahorroDraft=null;
 function renderAj(){
-  if(!borrador) borrador=D.categorias.map(c=>({modo:'pct',monto:0,porcentaje:0,fijo:false,...c}));
+  if(!borrador) borrador=D.categorias.map((c,i)=>({modo:'pct',monto:0,porcentaje:0,fijo:false,...c,color:colorDe(c,i)}));
   if(!ahorroDraft) ahorroDraft={...ahorroCfg()};
   const base=sueldoDe(mes).monto;
   $('aj-mes').textContent=base?`${nombreMes(mes).toLowerCase()} (${clp(base)})`:`${nombreMes(mes).toLowerCase()}, que aún no ingresas`;
@@ -651,7 +715,8 @@ function renderAj(){
     </div>
     <div class="val ${c.modo==='monto'?'monto':''}"><input type="text" id="cp-${esc(c.id)}" data-i="${i}" data-k="valor" class="num" value="${valorCampo(c)}" inputmode="${c.modo==='monto'?'numeric':'decimal'}" placeholder="0" aria-label="${c.modo==='monto'?'Monto mensual':'Porcentaje del sueldo'} para ${esc(c.nombre)}"><span class="u">${c.modo==='monto'?'$':'%'}</span></div>
     <span class="amt num" id="ca-${i}">${equivalente(c,base)}</span>
-    <label class="fijo"><input type="checkbox" data-i="${i}" data-k="fijo" ${c.fijo?'checked':''}> Gasto fijo (se paga una vez en el período)</label></div>`).join('');
+    <label class="fijo"><input type="checkbox" data-i="${i}" data-k="fijo" ${c.fijo?'checked':''}> Gasto fijo (se paga una vez en el período)</label>
+    <button class="colbtn" type="button" data-i="${i}" style="--ic:${c.color}" aria-label="Cambiar color de ${esc(c.nombre)}" title="Toca para cambiar el color"></button></div>`).join('');
   renderAhorro(); renderSuma();
 }
 function renderAhorro(){
@@ -691,6 +756,11 @@ function renderSuma(){
     <span class="det">Son tus gastos del día a día (${clp(P.variable)}) divididos en los ${P.dias} días del período. Los gastos fijos no entran aquí: se cuentan completos el día que pagas.</span></div>
   <p class="muted" style="margin:12px 0 0"><b>Cómo te compara la app con tu plan:</b> a cualquier fecha, lo esperado es tus gastos fijos más el presupuesto diario por los días que van. Si llevas más que eso, vas por sobre el plan.</p>`;
 }
+$('cats').addEventListener('click',e=>{
+  const b=e.target.closest('.colbtn'); if(!b) return;
+  const c=borrador[+b.dataset.i]; const k=PALETA.indexOf(c.color);
+  c.color=PALETA[(k+1)%PALETA.length]; b.style.setProperty('--ic',c.color);
+});
 $('cats').addEventListener('change',e=>{
   const t=e.target; if(t.dataset.k!=='fijo') return;
   const c=borrador[+t.dataset.i]; if(c){ c.fijo=t.checked; renderSuma(); }
@@ -718,7 +788,7 @@ $('cats').addEventListener('click',e=>{
   if(D.gastos.some(g=>g.cat===c.id)){ st.className='status err'; st.textContent=`"${c.nombre}" tiene gastos anotados. Puedes cambiarle el nombre o dejarlo en 0, pero no borrarlo.`; return; }
   borrador.splice(+b.dataset.i,1); st.textContent=''; renderAj();
 });
-$('addCat').onclick=()=>{ const c={id:nuevoId().slice(0,12),nombre:'',modo:'pct',porcentaje:0,monto:0,fijo:false}; borrador.push(c); renderAj(); $('cn-'+c.id).focus(); };
+$('addCat').onclick=()=>{ const usados=new Set(borrador.map(x=>x.color)); const c={id:nuevoId().slice(0,12),nombre:'',modo:'pct',porcentaje:0,monto:0,fijo:false,color:PALETA.find(p=>!usados.has(p))||PALETA[borrador.length%PALETA.length]}; borrador.push(c); renderAj(); $('cn-'+c.id).focus(); };
 $('saveCats').onclick=async()=>{
   const st=$('aj-status'); st.className='status err';
   const limpios=borrador.map(c=>({...c,nombre:c.nombre.trim()}));
@@ -743,8 +813,7 @@ $('csv').onclick=()=>{
 
 // ===== Análisis =====
 // Colores validados (sin naranjo): se asignan por el orden de los items, no por cuánto se gastó.
-const SERIES=['#2a78d6','#1baf7a','#6250d6','#e87ba4','#eda100','#008300'];
-const GRIS_RESTO='#94A3B8';
+
 const corto=n=>{ const a=Math.abs(n); return (n<0?'−':'')+(a>=1e6?'$'+(a/1e6).toFixed(1).replace('.',',')+' M':a>=1000?'$'+Math.round(a/1000)+' mil':'$'+Math.round(a)); };
 const tip=document.createElement('div'); tip.className='tip'; tip.hidden=true; document.body.appendChild(tip);
 function mostrarTip(html,x,y){ tip.innerHTML=html; tip.hidden=false; const r=tip.getBoundingClientRect(); let l=x+12, t=y-r.height-12; if(l+r.width>innerWidth-8) l=x-r.width-12; if(l<8) l=8; if(t<8) t=y+16; tip.style.left=l+'px'; tip.style.top=t+'px'; }
@@ -755,7 +824,7 @@ document.addEventListener('scroll',ocultarTip,{passive:true});
 // Los items marcados como fijos en Mi plan se pagan una vez por período: no se proyectan día a día.
 function datosAnalisis(){
   const s=sueldoDe(mes).monto, otros=suma(ingresosMes(mes)), ingresos=s+otros;
-  const cats=D.categorias.map((c,i)=>({id:c.id,nombre:c.nombre,porcentaje:pctDe(c,s),asignado:asignadoDe(c,s),gasto:suma(gastosMes(mes,c.id)),color:i<SERIES.length?SERIES[i]:null}));
+  const cats=D.categorias.map((c,i)=>({id:c.id,nombre:c.nombre,porcentaje:pctDe(c,s),asignado:asignadoDe(c,s),gasto:suma(gastosMes(mes,c.id)),color:colorDe(c,i)}));
   const gastado=cats.reduce((a,c)=>a+c.gasto,0);
   const actual=mes===hoyMes(), dm=diasPeriodo(mes), dia=actual?difDias(inicioP(mes),hoy())+1:dm;
   const fijoIds=new Set(D.categorias.filter(c=>c.fijo).map(c=>c.id)), esFijo=g=>fijoIds.has(g.cat);
@@ -774,9 +843,7 @@ function renderAna(){
 
 function renderStack(A){
   const conGasto=A.cats.filter(c=>c.gasto>0);
-  const segs=conGasto.filter(c=>c.color).map(c=>({nombre:c.nombre,monto:c.gasto,color:c.color}));
-  const resto=conGasto.filter(c=>!c.color);
-  if(resto.length) segs.push({nombre:resto.length===1?resto[0].nombre:'Otros items',monto:suma(resto.map(c=>({monto:c.gasto}))),color:GRIS_RESTO,detalle:resto.map(c=>c.nombre).join(', ')});
+  const segs=conGasto.map(c=>({nombre:c.nombre,monto:c.gasto,color:c.color}));
   const libre=A.ingresos-A.gastado;
   const total=Math.max(A.ingresos,A.gastado);
   $('ana-base').textContent=A.ingresos
@@ -815,19 +882,19 @@ function renderLinea(A){
   let g='';
   ticksY.forEach(v=>{ g+=`<line x1="${m.l}" x2="${m.l+w}" y1="${Y(v)}" y2="${Y(v)}" stroke="#E2E8F0" stroke-width="1"/><text x="${m.l-6}" y="${Y(v)+4}" text-anchor="end">${corto(v)}</text>`; });
   [...new Set([1,Math.round(A.dm/3),Math.round(A.dm*2/3),A.dm])].forEach((d,k)=>{ g+=`<text x="${X(d)}" y="${H-6}" text-anchor="${k===0?'start':k===3?'end':'middle'}">${fCorta(iso(fechaDia(d)))}</text>`; });
-  if(A.ingresos){ g+=`<line x1="${m.l}" x2="${m.l+w}" y1="${Y(A.ingresos)}" y2="${Y(A.ingresos)}" stroke="#0F766E" stroke-width="1.5" stroke-dasharray="2 4"/>`;
-    g+=`<text x="${m.l+w+6}" y="${Y(A.ingresos)+4}" style="fill:#0F766E">Ingresos</text>`; }
+  if(A.ingresos){ g+=`<line x1="${m.l}" x2="${m.l+w}" y1="${Y(A.ingresos)}" y2="${Y(A.ingresos)}" stroke="#0FBA82" stroke-width="2" stroke-dasharray="2 4"/>`;
+    g+=`<text x="${m.l+w+6}" y="${Y(A.ingresos)+4}" style="fill:#047857">Ingresos</text>`; }
   const planDia=d=>A.planFijo+A.planVar*d/A.dm;
   if(plan){ g+=`<line x1="${X(1)}" y1="${Y(planDia(1))}" x2="${X(A.dm)}" y2="${Y(plan)}" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 5"/>`;
     g+=`<text x="${m.l+w+6}" y="${Y(plan)+(Math.abs(Y(plan)-Y(A.ingresos))<14?14:4)}">Plan</text>`; }
   const pts=[]; for(let d=1;d<=hasta;d++) pts.push(`${X(d).toFixed(1)},${Y(acum[d]).toFixed(1)}`);
-  if(pts.length>1) g+=`<path d="M${pts.join('L')}L${X(hasta).toFixed(1)},${Y(0)}L${X(1)},${Y(0)}Z" fill="#1E40AF" opacity=".07"/><polyline points="${pts.join(' ')}" fill="none" stroke="#1E40AF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-  if(hasta>=1){ const yv=acum[hasta]; g+=`<circle cx="${X(hasta)}" cy="${Y(yv)}" r="5" fill="#1E40AF" stroke="#fff" stroke-width="2"/>`;
+  if(pts.length>1) g+=`<path d="M${pts.join('L')}L${X(hasta).toFixed(1)},${Y(0)}L${X(1)},${Y(0)}Z" fill="#1C70CF" opacity=".10"/><polyline points="${pts.join(' ')}" fill="none" stroke="#1C70CF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(hasta>=1){ const yv=acum[hasta]; g+=`<circle cx="${X(hasta)}" cy="${Y(yv)}" r="5" fill="#1C70CF" stroke="#fff" stroke-width="2"/>`;
     g+=`<text x="${Math.min(X(hasta)+8,m.l+w-4)}" y="${Y(yv)-9}" text-anchor="${X(hasta)+70>m.l+w?'end':'start'}" style="fill:#0F172A;font-weight:600">${corto(yv)}</text>`; }
   g+=`<line id="cross" x1="0" x2="0" y1="${m.t}" y2="${m.t+h}" stroke="#64748B" stroke-width="1" visibility="hidden"/>`;
   g+=`<rect x="${m.l}" y="${m.t}" width="${w}" height="${h}" fill="transparent" id="hit"/>`;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('height',H); svg.innerHTML=g;
-  $('ley2').innerHTML=`<span><i style="border-color:#1E40AF"></i>Gastado acumulado</span>${plan?'<span><i style="border-color:#94A3B8;border-top-style:dashed"></i>Plan de los items</span>':''}${A.ingresos?'<span><i style="border-color:#0F766E;border-top-style:dotted"></i>Ingresos del período</span>':''}`;
+  $('ley2').innerHTML=`<span><i style="border-color:#1C70CF"></i>Gastado acumulado</span>${plan?'<span><i style="border-color:#94A3B8;border-top-style:dashed"></i>Plan de los items</span>':''}${A.ingresos?'<span><i style="border-color:#0FBA82;border-top-style:dotted"></i>Ingresos del período</span>':''}`;
   const hit=$('hit'), cross=$('cross');
   const mover=e=>{ const r=svg.getBoundingClientRect(), x=(e.clientX-r.left)*W/r.width; let d=Math.round((x-m.l)/w*(A.dm-1))+1; d=Math.max(1,Math.min(A.dm,d));
     cross.setAttribute('x1',X(d)); cross.setAttribute('x2',X(d)); cross.setAttribute('visibility','visible');
@@ -839,7 +906,7 @@ function renderLinea(A){
 
 function renderConclusiones(A){
   const L=[];
-  const add=(tipo,txt)=>L.push(`<li><span class="ic ${tipo}" aria-hidden="true">${tipo==='ok'?'✓':tipo==='mal'?'!':'i'}</span><span>${txt}</span></li>`);
+  const add=(tipo,txt)=>L.push(`<li><span class="ic ${tipo}" aria-hidden="true">${tipo==='ok'?'✓':tipo==='mal'||tipo==='av'?'!':'i'}</span><span>${txt}</span></li>`);
   if(!A.s){ add('info','Ingresa tu sueldo en la pestaña <b>Ingresos</b> para que pueda comparar tus gastos con lo que ganas.'); }
   if(!A.gastado){ add('info',`Todavía no hay gastos anotados en ${esc(refPeriodo(mes))}.`); $('concl').innerHTML=L.join(''); return; }
   const pctGastado=A.ingresos?A.gastado/A.ingresos*100:0, pctMes=A.dia/A.dm*100;
@@ -848,7 +915,7 @@ function renderConclusiones(A){
     add('info',`Llevas gastado <b>${clp(A.gastado)}</b>, el <b>${Math.round(pctGastado)}%</b> de tus ingresos, y va el ${Math.round(pctMes)}% del período.`);
     if(A.planVar){
       const planHoy=A.planVar*A.dia/A.dm, rapido=A.gVar>planHoy*1.05;
-      add(rapido?'mal':'ok',`En gastos del día a día llevas <b>${clp(A.gVar)}</b>. Con tu presupuesto diario de ${clp(A.diario)}, a esta fecha (${A.dia} día${A.dia===1?'':'s'}) tu plan era ${clp(planHoy)}. ${rapido?`Vas <b>${clp(A.gVar-planHoy)} (${Math.round((A.gVar/planHoy-1)*100)}%) por sobre el plan</b>.`:`Vas ${clp(planHoy-A.gVar)} bajo el plan.`}`);
+      add(rapido?'av':'ok',`En gastos del día a día llevas <b>${clp(A.gVar)}</b>. Con tu presupuesto diario de ${clp(A.diario)}, a esta fecha (${A.dia} día${A.dia===1?'':'s'}) tu plan era ${clp(planHoy)}. ${rapido?`Vas <b>${clp(A.gVar-planHoy)} (${Math.round((A.gVar/planHoy-1)*100)}%) por sobre el plan</b>.`:A.gVar>planHoy?`Vas apenas ${clp(A.gVar-planHoy)} sobre el plan, prácticamente en línea.`:`Vas ${clp(planHoy-A.gVar)} bajo el plan.`}`);
     }
     const sobra=A.ingresos-A.proy;
     add(sobra<0?'mal':'info',`Si sigues a este ritmo, llegarás a tu próximo pago habiendo gastado cerca de <b>${clp(A.proy)}</b>, ${sobra<0?`<span class="neg">${clp(-sobra)} más de lo que ganas</span>`:`y te quedarían <b>${clp(sobra)}</b> (${Math.round(sobra/A.ingresos*100)}% de tus ingresos)`}.`);
@@ -872,7 +939,7 @@ function renderConclusiones(A){
     if(pasados.length) add('mal',`Te pasaste del presupuesto en ${pasados.map(c=>`<b>${esc(c.nombre)}</b> (+${clp(c.gasto-c.asignado)})`).join(', ')}.`);
     if(A.actual){
       const enRiesgo=A.cats.filter(c=>c.asignado>0&&c.gasto<=c.asignado&&c.gasto/c.asignado*100>pctMes+20&&c.gasto/c.asignado>=0.6);
-      if(enRiesgo.length) add('mal',`Cuidado con ${enRiesgo.map(c=>`<b>${esc(c.nombre)}</b> (usaste ${Math.round(c.gasto/c.asignado*100)}%)`).join(', ')}: vas adelantado respecto al avance del período.`);
+      if(enRiesgo.length) add('av',`Cuidado con ${enRiesgo.map(c=>`<b>${esc(c.nombre)}</b> (usaste ${Math.round(c.gasto/c.asignado*100)}%)`).join(', ')}: vas adelantado respecto al avance del período.`);
     }
     if(!pasados.length) add('ok','No te has pasado del presupuesto en ningún item.');
   }
