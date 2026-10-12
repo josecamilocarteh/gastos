@@ -67,7 +67,8 @@ function limpiarCats(cs) {
     ids.add(c.id);
     // Cada item se asigna como porcentaje del sueldo o como monto fijo.
     const modo = c?.modo === 'monto' ? 'monto' : 'pct';
-    out.push({ id: String(c.id), nombre, modo, porcentaje: Math.round(p * 10) / 10, monto: m, fijo: c?.fijo === true });
+    const color = /^#[0-9A-Fa-f]{6}$/.test(String(c?.color)) ? String(c.color) : '';
+    out.push({ id: String(c.id), nombre, modo, porcentaje: Math.round(p * 10) / 10, monto: m, fijo: c?.fijo === true, color });
   }
   return out;
 }
@@ -100,6 +101,7 @@ function normalizar(d) {
       porcentaje: Number(c.porcentaje) || 0,
       monto: Number(c.monto) || 0,
       fijo: sinMarca ? ['vivienda', 'cuentas'].includes(c.id) : c.fijo === true,
+      color: /^#[0-9A-Fa-f]{6}$/.test(String(c.color)) ? c.color : '',
     })),
     gastos: Array.isArray(d?.gastos) ? d.gastos : [],
     ingresos: Array.isArray(d?.ingresos) ? d.ingresos : [],
