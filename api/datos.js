@@ -1,25 +1,21 @@
 import { get, put } from '@vercel/blob';
 import { timingSafeEqual } from 'node:crypto';
 
-// Todos los datos viven en un único archivo JSON privado en Vercel Blob.
-const RUTA = 'gastos/datos.json';
-
-// Porcentajes sugeridos del sueldo (se pueden cambiar en la app).
-const CATS_INICIALES = [
-  { id: 'vivienda', nombre: 'Vivienda (arriendo o dividendo)', porcentaje: 25, fijo: true },
-  { id: 'supermercado', nombre: 'Supermercado', porcentaje: 15 },
-  { id: 'cuentas', nombre: 'Cuentas (luz, agua, internet)', porcentaje: 10, fijo: true },
-  { id: 'transporte', nombre: 'Transporte', porcentaje: 8 },
-  { id: 'comida-fuera', nombre: 'Comida fuera', porcentaje: 5 },
-  { id: 'salud', nombre: 'Salud', porcentaje: 5 },
-  { id: 'entretencion', nombre: 'Entretención', porcentaje: 5 },
-  { id: 'ropa', nombre: 'Ropa', porcentaje: 3 },
-  { id: 'otros', nombre: 'Otros', porcentaje: 4 },
-];
+// Versión simple: un catálogo de gastos (botones) y, por cada mes, el dinero disponible y los gastos marcados.
+// Usa un archivo nuevo para no tocar los datos de la versión anterior.
+const RUTA = 'gastos/simple.json';
 
 const ID = /^[A-Za-z0-9_-]{1,64}$/;
-const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 const MES = /^\d{4}-\d{2}$/;
+const FECHA = /^\d{4}-\d{2}-\d{2}$/;
+const COLOR = /^#[0-9A-Fa-f]{6}$/;
+
+const FIJOS_INICIALES = [
+  { id: 'bip', nombre: 'Tarjeta Bip', monto: 6000, color: '#1C70CF' },
+  { id: 'almuerzo', nombre: 'Almuerzo', monto: 7000, color: '#0FBA82' },
+  { id: 'cafe', nombre: 'Café', monto: 2500, color: '#801C1C' },
+  { id: 'super', nombre: 'Supermercado', monto: 30000, color: '#7D3BED' },
+];
 
 function pinValido(req) {
   const esperado = process.env.APP_PIN || '';
@@ -34,83 +30,21 @@ const json = (body, status = 200) =>
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
-function monto(v) {
+const monto = (v) => {
   const n = Math.round(Number(v));
   return Number.isFinite(n) && n > 0 && n <= 1e10 ? n : null;
-}
-
-function limpiarMovimiento(g, conItem) {
-  if (!g || typeof g !== 'object') return null;
-  const m = monto(g.monto);
-  if (!m || !ID.test(String(g.id)) || !FECHA.test(String(g.fecha))) return null;
-  if (conItem && !ID.test(String(g.cat))) return null;
-  const out = {
-    id: String(g.id),
-    fecha: String(g.fecha),
-    monto: m,
-    nota: typeof g.nota === 'string' ? g.nota.trim().slice(0, 120) : '',
-    creado: Number.isFinite(Number(g.creado)) ? Number(g.creado) : Date.now(),
-  };
-  if (conItem) out.cat = String(g.cat);
-  return out;
-}
-
-function limpiarCats(cs) {
-  if (!Array.isArray(cs) || cs.length === 0 || cs.length > 40) return null;
-  const out = [];
-  const ids = new Set();
-  for (const c of cs) {
-    const nombre = typeof c?.nombre === 'string' ? c.nombre.trim().slice(0, 40) : '';
-    const p = Math.min(100, Math.max(0, Number(c?.porcentaje) || 0));
-    const m = Math.min(1e10, Math.max(0, Math.round(Number(c?.monto) || 0)));
-    if (!ID.test(String(c?.id)) || !nombre || ids.has(c.id)) return null;
-    ids.add(c.id);
-    // Cada item se asigna como porcentaje del sueldo o como monto fijo.
-    const modo = c?.modo === 'monto' ? 'monto' : 'pct';
-    const color = /^#[0-9A-Fa-f]{6}$/.test(String(c?.color)) ? String(c.color) : '';
-    out.push({ id: String(c.id), nombre, modo, porcentaje: Math.round(p * 10) / 10, monto: m, fijo: c?.fijo === true, color });
-  }
-  return out;
-}
-
-// Día de pago: un número del 1 al 31, o 'ultimo' para el último día hábil del mes.
-function diaPagoValido(v) {
-  if (v === 'ultimo') return 'ultimo';
-  const n = Number(v);
-  return Number.isInteger(n) && n >= 1 && n <= 31 ? n : null;
-}
-
-// Meta de ahorro: porcentaje del sueldo o monto fijo en pesos.
-function ahorroValido(a) {
-  if (!a || typeof a !== 'object') return null;
-  const modo = a.modo === 'monto' ? 'monto' : 'pct';
-  const v = Number(a.valor);
-  if (!Number.isFinite(v) || v < 0) return null;
-  return modo === 'pct' ? { modo, valor: Math.min(100, Math.round(v * 10) / 10) } : { modo, valor: Math.min(1e10, Math.round(v)) };
-}
+};
+const nombre = (v) => (typeof v === 'string' ? v.trim().slice(0, 40) : '');
 
 function normalizar(d) {
-  const cats = Array.isArray(d?.categorias) && d.categorias.length ? d.categorias : CATS_INICIALES;
-  // Datos guardados antes de existir la marca "fijo": vivienda y cuentas parten como fijos.
-  const sinMarca = !cats.some((c) => 'fijo' in c);
   return {
-    categorias: cats.map((c) => ({
-      id: c.id,
-      nombre: c.nombre,
-      modo: c.modo === 'monto' ? 'monto' : 'pct',
-      porcentaje: Number(c.porcentaje) || 0,
-      monto: Number(c.monto) || 0,
-      fijo: sinMarca ? ['vivienda', 'cuentas'].includes(c.id) : c.fijo === true,
-      color: /^#[0-9A-Fa-f]{6}$/.test(String(c.color)) ? c.color : '',
-    })),
-    gastos: Array.isArray(d?.gastos) ? d.gastos : [],
-    ingresos: Array.isArray(d?.ingresos) ? d.ingresos : [],
-    sueldos: d?.sueldos && typeof d.sueldos === 'object' ? d.sueldos : {},
-    config: {
-      diaPago: diaPagoValido(d?.config?.diaPago) ?? 1,
-      ahorro: ahorroValido(d?.config?.ahorro) ?? { modo: 'pct', valor: 20 },
-    },
+    fijos: Array.isArray(d?.fijos) ? d.fijos : FIJOS_INICIALES,
+    meses: d?.meses && typeof d.meses === 'object' ? d.meses : {},
   };
+}
+function mesDe(d, m) {
+  if (!d.meses[m]) d.meses[m] = { ingresos: [], gastos: [] };
+  return d.meses[m];
 }
 
 async function leer() {
@@ -153,12 +87,12 @@ export async function GET(req) {
 }
 
 // Cada cambio llega como una operación y se aplica sobre la versión guardada,
-// así dos dispositivos pueden registrar movimientos sin borrarse lo del otro.
+// así el celular y el computador pueden registrar sin borrarse lo del otro.
 export async function POST(req) {
   if (!pinValido(req)) return json({ error: 'PIN incorrecto' }, 401);
-  let body;
+  let b;
   try {
-    body = await req.json();
+    b = await req.json();
   } catch {
     return json({ error: 'Datos inválidos' }, 400);
   }
@@ -168,64 +102,61 @@ export async function POST(req) {
   } catch (e) {
     return errorAlmacen(e);
   }
+  const malo = (msg) => json({ error: msg }, 400);
+  const mesOk = MES.test(String(b?.mes));
 
-  switch (body?.op) {
-    case 'agregar': {
-      const g = limpiarMovimiento(body.gasto, true);
-      if (!g) return json({ error: 'Gasto inválido' }, 400);
-      if (!d.categorias.some((c) => c.id === g.cat)) return json({ error: 'El item no existe' }, 400);
-      d.gastos = d.gastos.filter((x) => x.id !== g.id).concat(g);
-      break;
-    }
-    case 'eliminar':
-      d.gastos = d.gastos.filter((x) => x.id !== body.id);
-      break;
-    case 'agregarIngreso': {
-      const i = limpiarMovimiento(body.ingreso, false);
-      if (!i) return json({ error: 'Ingreso inválido' }, 400);
-      d.ingresos = d.ingresos.filter((x) => x.id !== i.id).concat(i);
+  switch (b?.op) {
+    case 'ingreso': {
+      const i = b.ingreso || {};
+      if (!mesOk || !ID.test(String(i.id)) || !nombre(i.nombre) || !monto(i.monto)) return malo('Ingreso inválido');
+      const M = mesDe(d, b.mes);
+      M.ingresos = M.ingresos.filter((x) => x.id !== i.id).concat({ id: i.id, nombre: nombre(i.nombre), monto: monto(i.monto) });
       break;
     }
     case 'eliminarIngreso':
-      d.ingresos = d.ingresos.filter((x) => x.id !== body.id);
+      if (!mesOk) return malo('Mes inválido');
+      mesDe(d, b.mes).ingresos = mesDe(d, b.mes).ingresos.filter((x) => x.id !== b.id);
       break;
-    case 'sueldo': {
-      if (!MES.test(String(body.mes))) return json({ error: 'Mes inválido' }, 400);
-      const m = monto(body.monto);
-      if (m) d.sueldos[body.mes] = m;
-      else delete d.sueldos[body.mes];
-      break;
-    }
-    case 'config': {
-      const dp = diaPagoValido(body.diaPago);
-      if (dp === null) return json({ error: 'Día de pago inválido' }, 400);
-      d.config = { ...d.config, diaPago: dp };
-      break;
-    }
-    case 'plan': {
-      const cs = limpiarCats(body.categorias);
-      const ah = ahorroValido(body.ahorro);
-      if (!cs || !ah) return json({ error: 'El plan tiene datos inválidos' }, 400);
-      const quedan = new Set(cs.map((c) => c.id));
-      if (d.gastos.some((g) => !quedan.has(g.cat))) {
-        return json({ error: 'No se puede borrar un item que tiene gastos registrados' }, 400);
-      }
-      d.categorias = cs;
-      d.config = { ...d.config, ahorro: ah };
+    case 'gasto': {
+      const g = b.gasto || {};
+      if (!mesOk || !ID.test(String(g.id)) || !nombre(g.nombre) || !monto(g.monto) || !FECHA.test(String(g.fecha))) return malo('Gasto inválido');
+      const M = mesDe(d, b.mes);
+      M.gastos = M.gastos.filter((x) => x.id !== g.id).concat({
+        id: g.id,
+        fijoId: ID.test(String(g.fijoId)) ? g.fijoId : null,
+        nombre: nombre(g.nombre),
+        monto: monto(g.monto),
+        color: COLOR.test(String(g.color)) ? g.color : '',
+        fecha: g.fecha,
+        creado: Number(g.creado) || Date.now(),
+      });
       break;
     }
-    case 'items': {
-      const cs = limpiarCats(body.categorias);
-      if (!cs) return json({ error: 'Lista de items inválida' }, 400);
-      const quedan = new Set(cs.map((c) => c.id));
-      if (d.gastos.some((g) => !quedan.has(g.cat))) {
-        return json({ error: 'No se puede borrar un item que tiene gastos registrados' }, 400);
-      }
-      d.categorias = cs;
+    case 'eliminarGasto':
+      if (!mesOk) return malo('Mes inválido');
+      mesDe(d, b.mes).gastos = mesDe(d, b.mes).gastos.filter((x) => x.id !== b.id);
+      break;
+    case 'fijo': {
+      const f = b.fijo || {};
+      if (!ID.test(String(f.id)) || !nombre(f.nombre) || !monto(f.monto)) return malo('Gasto fijo inválido');
+      const nuevo = { id: f.id, nombre: nombre(f.nombre), monto: monto(f.monto), color: COLOR.test(String(f.color)) ? f.color : '#1C70CF' };
+      const i = d.fijos.findIndex((x) => x.id === f.id);
+      if (i >= 0) d.fijos[i] = nuevo;
+      else if (d.fijos.length < 60) d.fijos.push(nuevo);
+      else return malo('Llegaste al máximo de 60 gastos');
+      break;
+    }
+    case 'eliminarFijo':
+      d.fijos = d.fijos.filter((x) => x.id !== b.id);
+      break;
+    case 'ordenFijos': {
+      if (!Array.isArray(b.ids)) return malo('Orden inválido');
+      const pos = new Map(b.ids.map((id, i) => [id, i]));
+      d.fijos.sort((x, y) => (pos.get(x.id) ?? 999) - (pos.get(y.id) ?? 999));
       break;
     }
     default:
-      return json({ error: 'Operación desconocida' }, 400);
+      return malo('Operación desconocida');
   }
 
   try {
